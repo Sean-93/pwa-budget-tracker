@@ -1,4 +1,4 @@
-const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shinIndexedDB
+const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB
 
 const database;
 
@@ -16,7 +16,7 @@ request.onsuccess = ({target}) => {
     }
 }
 
-function saveInfo(info) {
+function saveRecord(info) {
 const transaction = database.transaction(["pending"], "readwrite");
 const storeInfo = transaction.objectStore("pending");
 storeInfo.add(info);
@@ -24,12 +24,12 @@ storeInfo.add(info);
 
 function checkDB() {
     const transaction = database.transaction(["pending"], "readwrite");
-    const storeInfo = transaction.objectStore("pending");
-    const getAll = storeInfo.getAll();
+    const info = transaction.objectStore("pending");
+    const getAll = info.getAll();
     getAll.onsuccess = function() {
         if (getAll.result.length > 0) {
             fetch("/api/transaction/bulk", {method: "POST", body: JSON.stringify(getAll.result), headers: {Accept: "application/JSON, text/plain", "content-type": "application/JSON"}}).then(data => {
-                return database.json();
+                return data.json();
             }).then(() => {
                 const transaction = database.transaction(["pending"], "readwrite");
                 const storeInfo = transaction.objectStore("pending");

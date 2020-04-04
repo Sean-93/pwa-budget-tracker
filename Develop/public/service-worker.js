@@ -1,7 +1,7 @@
 const filesToCache = ["/", "app.js", "styles.css"];
 console.log("Hi from your service-worker.js file!");
 
-const cacheName = "data-cache-v1";
+const cacheName = "my-site-cache-v1";
 
 self.addEventListener("install", function(evt) {
   evt.waitUntil(
