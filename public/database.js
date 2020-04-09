@@ -1,19 +1,23 @@
 const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB
 
-const database;
+let database = null;
 
 const request = indexedDB.open("budget", 1);
 
 request.onupgradeneeded = ({target}) => {
-    const db = target.result;
-    db.createObjectStore("pending", {autoincrement: true});
+    database = target.result;
+    database.createObjectStore("pending", {autoIncrement: true});
 };
 
 request.onsuccess = ({target}) => {
-    db = target.result;
+    database = target.result;
     if (navigator.onLine) {
         checkDB();
     }
+}
+
+request.onerror = function(event) {
+console.log(event.target.errorCode)
 }
 
 function saveRecord(info) {
